@@ -1,1 +1,0 @@
-\bin\node start.js

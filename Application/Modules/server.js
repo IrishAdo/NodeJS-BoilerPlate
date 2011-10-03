@@ -8,14 +8,16 @@ var handles     = new Array();
 // Load required core modules
 var http        = require("http");
 var url         = require("url");
+var fs          = require("fs");
+var path        = require("path");
 
 // load my modules
 var router      = require("./router");
 
-// load the default file handler for the server and add its handlers to the list
-var filehandler = require("./handlers/filehandler");
-filehandler.addHandlersToList(handles);
-
+///<summary>
+///the method to start the server
+///</summary>
+///<param name="OverRideConfiguration">An object holding settings to overwrite the configuration</param>
 function start(OverRideConfiguration){
 	
 	// default configuration object
@@ -37,11 +39,19 @@ function start(OverRideConfiguration){
 	function onRequest (request,response){
 		// get the path from the url 
 		var pathname = url.parse(request.url).pathname;
-		console.log("path is " + pathname);
+		// special Cases needto handle "/" and "/favicon.ico"
+		if(pathname == "/"){pathname="/Resources/index.html";}
+		if(pathname == "/favicon.ico"){pathname="/Resources/favicon.ico";}
+		
+		var module = pathname.split("/")[1];
+		
+		console.log("find module " + module);
+		console.log("path information " + pathname);
+		console.log(typeof handles[module]);
 		
 		// check if a handler has already been loaded for this request.
-		if(typeof handles[pathname] !== 'function'){
-			// if we have not already loaded the handler object.
+		if(typeof handles[module] !== 'Array'){
+			// if we have not already loaded the handler object go find it.
 			FindHandler(router,handles,pathname,response);
 		} else {
 			// ok just route the request to the handler
@@ -58,19 +68,24 @@ function start(OverRideConfiguration){
 	///<param name='pathInfo'></param>
 	///<param name='response'>The connection to send the response on</param>
 	function FindHandler (router,handles,pathInfo,response) {
-	  var foundHandler = false;
-	  var parts = pathInfo.split("/");
-	  if(parts[1]=="ado"){
-	  	var ado = require("./handlers/ado");
-	  	ado.addHandlersToList(handles);
-	  	foundHandler = true;
-	  }
-	  // if we have found the handler then route the request otherwise raise an error.
-	  if(foundHandler){
-	  	router.route(handles, pathInfo, response, RaiseError);
-	  } else {
-	  	RaiseError(404,response);
-	  }
+		var foundHandler = false;
+		var responseObject = response;
+		var module = pathInfo.split("/")[1];
+		console.log("looking for ./handlers/"+module+".js");
+		
+		path.exists("./Application/Modules/handlers/"+module+".js", function(exists) {
+			if(!exists) {
+				console.log("notfound "+module)
+				RaiseError(404,response);
+				return;
+			}
+			console.log("requiring "+module)
+			var loadedModule = require("./handlers/"+module);
+			loadedModule.addHandlersToList(handles);
+			foundHandler = true;
+			router.route(handles, pathInfo, responseObject, RaiseError);
+		}); 
+	
 	}
 	
 	///<summary>

@@ -2,22 +2,22 @@
 /// A function to process /ado/hello requests
 ///</summary>
 ///<param name='response'>The connection to send the response on</param>
-function hello(response){ 
+function hello(pathName, responseObject){ 
 	console.log("hello");
-	response.writeHead(200, {"Content-Type": "text\plain"});
-	response.write("Hello and welcome");
-	response.end();	
+	responseObject.writeHead(200, {"Content-Type": "text\plain"});
+	responseObject.write("Hello and welcome");
+	responseObject.end();	
 }
 
 ///<summary>
 /// A function to process /ado/goodbye requests
 ///</summary>
 ///<param name='response'>The connection to send the response on</param>
-function goodbye(response){
+function goodbye(pathName, responseObject){
 	console.log("goodbye");
-	response.writeHead(200, {"Content-Type": "text\plain"});
-	response.write("Goodbye");
-	response.end();	
+	responseObject.writeHead(200, {"Content-Type": "text\plain"});
+	responseObject.write("Goodbye");
+	responseObject.end();	
 }
 
 ///<summary>
@@ -25,10 +25,12 @@ function goodbye(response){
 ///</summary>
 ///<param name='handles'>The list of handlers that have currently been loaded</param>
 function addHandlersToList(handles){
+	// create the handle list for ado
+	handles["ado"] = new Array();
 	// if someone accesses http://localhost:<port>/ado/hello then execute the hello function
-	handles["/ado/hello"] = hello;
+	handles["ado"]["/ado/hello"] = hello;
 	// if someone accesses http://localhost:<port>/ado/goodbye then execute the goodbye function
-	handles["/ado/goodbye"] = goodbye;
+	handles["ado"]["/ado/goodbye"] = goodbye;
 }
 
 // export these functions
