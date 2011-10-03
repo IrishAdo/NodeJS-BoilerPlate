@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="/Resources/css/tutorial.css" />
+	</head>
+	<body>
+		<h1>Tutorial 1</h1>
+		<p>This tutorial will explain the coding behind this BoilerPlate.  These tutorials should expand as we develop the BoilerPlate.  I'll try to also let you know the revision on github that relates to all the code of each tutorial so that you can revert to a specific revision and then watch the code as we change it for each tutorial.</p>
+		<h2>start.js</h2>
+		<p>This is the code that starts the server.  It includes the Modules/server.js file that contains all of the code of the server. Notice that the start function of the server takes some parameters to allow us to override some default settings of our server.</p>
+		<code><pre>
+		function start(OverRideConfiguration){
+			
+			// default configuration object
+			var configuration = {
+				port : 8080
+				
+			};
+			
+			//  allow the start.js file to overwrite the port to listen on.
+			if (OverRideConfiguration.port){ 
+				configuration.port = OverRideConfiguration.port
+			}
+			
+			...
+		</code></pre>
+		<p>The important functions which are inside the start function are :-</p>
+		<pre><code>
+		///&lt;summary>
+		///The function that gets executed at the start of every request
+		///&lt;/summary>
+		///&lt;param name='request'>The request object that is submitted to the server</param>
+		///&lt;param name='response'>The connection to send the response on</param>
+		function onRequest (request,response)
+		
+		///&lt;summary>
+		///a Function to route requests to a specific function based on handling routes
+		///&lt;/summary>
+		///&lt;param name='router'></param>
+		///&lt;param name='handles'></param>
+		///&lt;param name='pathInfo'></param>
+		///&lt;param name='response'>The connection to send the response on</param>
+		function FindHandler (router,handles,pathInfo,response)
+		
+		///&lt;summary>
+		/// A function to load a standard Error Page
+		///&lt;/summary>
+		///&lt;param name='code'>404, 401, 500, 501, ...</param>
+		///&lt;param name='response'>The connection to send the response on</param>
+		function RaiseError(code,response)
+		</code></pre>
+		<h3>function onRequest (request,response)</h3>
+		<p>This is the main function for handling a request it will check if a handler has been loaded and will call the FindHandler if a handler currently does not exist.</p>
+		<h3>function FindHandler (router,handles,pathInfo,response)</h3>
+		<p>Find a handler in the handlers directory, require it and then call the add Handlers function to add the functions to the handlers array</p>
+		<h3>function RaiseError(code,response)</h3>
+		<p>A function to render an error page.</p>
+	</body>
+</html>

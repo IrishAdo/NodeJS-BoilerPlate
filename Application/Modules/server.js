@@ -43,12 +43,9 @@ function start(OverRideConfiguration){
 		if(pathname == "/"){pathname="/Resources/index.html";}
 		if(pathname == "/favicon.ico"){pathname="/Resources/favicon.ico";}
 		
+		// get the module name
 		var module = pathname.split("/")[1];
-		
-		console.log("find module " + module);
-		console.log("path information " + pathname);
-		console.log(typeof handles[module]);
-		
+	
 		// check if a handler has already been loaded for this request.
 		if(typeof handles[module] !== 'Array'){
 			// if we have not already loaded the handler object go find it.
