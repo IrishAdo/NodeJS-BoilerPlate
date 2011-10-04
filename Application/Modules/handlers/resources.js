@@ -1,13 +1,33 @@
+var fs = require("fs");
 ///<summary>
 /// A function to return a file in the Resources directory requests
 ///</summary>
 ///<param name='pathname'>The request path to process</param>
 ///<param name='response'>The connection to send the response on</param>
 function getFile(pathname, response){ 
-	console.log("Executing getFile('"+pathname+"')");
-	response.writeHead(200, {"Content-Type": "text\plain"});
-	response.write("Hello and welcome " + pathname);
-	response.end();	
+	console.log("Executing getFile('"+unescape(pathname)+"')");
+	var extension = null;
+	if (unescape(pathname).indexOf(".")>0){
+		var parts = unescape(pathname).split(".");
+		extension = parts[parts.length-1];
+	}
+	if(extension=="html" || extension=="css"){
+		response.writeHead(200, {"Content-Type": "text\\plain"});
+		// the file location is from the same location that we started the application from
+		fs.readFile("." + unescape(pathname), 'utf8', function(err, data){
+			if (err) throw err;
+			response.write(data);
+			response.end();
+		});
+	} else {
+		response.writeHead(200, {"Content-Type": "image\\"+extension});
+		// the file location is from the same location that we started the application from
+		fs.readFile("." + unescape(pathname), 'raw', function(err, data){
+			if (err) throw err;
+			response.write(data);
+			response.end();
+		});
+	}
 }
 
 
