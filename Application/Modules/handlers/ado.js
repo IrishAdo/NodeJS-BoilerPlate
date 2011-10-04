@@ -1,6 +1,7 @@
 ///<summary>
 /// A function to process /ado/hello requests
 ///</summary>
+///<param name='pathname'>The request path to process</param>
 ///<param name='response'>The connection to send the response on</param>
 function hello(pathName, responseObject){ 
 	console.log("hello");
@@ -12,6 +13,7 @@ function hello(pathName, responseObject){
 ///<summary>
 /// A function to process /ado/goodbye requests
 ///</summary>
+///<param name='pathname'>The request path to process</param>
 ///<param name='response'>The connection to send the response on</param>
 function goodbye(pathName, responseObject){
 	console.log("goodbye");

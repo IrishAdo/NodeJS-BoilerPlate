@@ -54,5 +54,119 @@
 		<p>Find a handler in the handlers directory, require it and then call the add Handlers function to add the functions to the handlers array</p>
 		<h3>function RaiseError(code,response)</h3>
 		<p>A function to render an error page.</p>
+		<h2>router.js</h2>
+		<p>This small module will just execute the correct function.  First it checks if the handler is a wildcard handler 
+		and will then pass all the information to the wildcard handling function of the handler module.  Second it will 
+		look for an exact match handler and finaly it will raise a 404 page error if that request can not be handled.</p>
+		<pre><code>
+		///&lt;summary>
+		///route all requests via one of the handlers
+		///&lt;/summary>
+		///&lt;param name="handlers">the global list of handlers&lt;/param>
+		///&lt;param name="PathName">the path sent to the server&lt;/param>
+		///&lt;param name="response">the response object ot return the page request on&lt;/param>
+		///&lt;param name="RaiseError">the Raise error function&lt;/param>
+		function route(handlers, PathName,response, RaiseError){
+			console.log("request to process " + PathName);
+			// we are going to use the first part of the path as the module name of the handler
+			// to get here the handler will exist and have been loaded
+			var module = PathName.split("/")[1];
+			console.log("module : "+ module)
+			
+			// if the handler is a wildcard handler ie /module/* then call that function
+			if (typeof handlers[module]["/" + module + "/*"] === 'function') {
+				handlers[module]["/" + module + "/*"](PathName, response);
+			
+			//  if the handler is not a wildcard ie /module/view then execute the function 
+			} else if (typeof handlers[module][PathName] === 'function'){
+				handlers[module][PathName](PathName, response);
+			
+			// if we are here then the handler does not have a match to execute it raise an error
+			} else {
+				RaiseError(404,response);
+			}
+		}
+		</code></pre>
+		<h2>A handler "resources.js"</h2>
+		<p>This handler will eventually read the content of a file int he /Resources directory and return it on the response object.</p>
+		<p>The current version will write out the string "Hello and welcome " followed by the request path.</p>
+		<pre><code>
+		///&lt;summary>
+		/// A function to return a file in the Resources directory requests
+		///&lt;/summary>
+		///&lt;param name='pathname'>The request path to process&lt;/param>
+		///&lt;param name='response'>The connection to send the response on&lt;/param>
+		function getFile(pathname, response){ 
+			console.log("getFile");
+			response.writeHead(200, {"Content-Type": "text\plain"});
+			response.write("Hello and welcome " + pathname);
+			response.end();	
+		}
+		
+		
+		///&lt;summary>
+		/// A function to add a list of handlers to the global list
+		///&lt;/summary>
+		///&lt;param name='handles'>The list of handlers that have currently been loaded&lt;/param>
+		function addHandlersToList(handles){
+			handles["Resources"] = new Array();
+			// Stream all files that are in the resources directory.
+			handles["Resources"]["/Resources/*"] = getFile;
+		}
+		
+		// export these functions
+		exports.getFile = getFile;
+		exports.addHandlersToList = addHandlersToList;
+		</code></pre>
+		<h2>Running the application</h2>
+		<p>When we run the application we get the following </p>
+		<code><pre>
+		C:\dev\boilerplate>\bin\node Application\start.js
+		Overriding the configuration Port changed from 8080 to 801
+		Server started on 801
+		</code></pre>
+		<p>When we request the site in our browser <a href="http://localhost:801">http://localhost:801</a> 
+		your web browser will make two requests one for "\" and the other for "\favicon.ico"
+		</p>
+		<code><pre>
+		Looking for ./handlers/Resources.js
+		Loading handler [Resources]
+		Routing /Resources/index.html
+		module : Resources
+		Executing getFile('/Resources/index.html')
+		Routing /Resources/favicon.ico
+		module : Resources
+		Executing getFile('/Resources/favicon.ico')
+		</code></pre>
+		<p>When we request the following url in our browser <a href="http://localhost:801/ado/hello">http://localhost:801/ado/hello</a> 
+		the web browser will tell the server to execute the handlers for the ado handler module and of course request the fav icon again.
+		</p>
+		<code><pre>
+		Looking for ./handlers/ado.js
+		Loading handler [ado]
+		Routing /ado/hello
+		module : ado
+		hello
+		Routing /Resources/favicon.ico
+		module : Resources
+		Executing getFile('/Resources/favicon.ico')
+		</code></pre>
+		<p>When we request the site in our browser <a href="http://localhost:801/ado/not here">http://localhost:801/ado/not here</a> 
+		the web browser will tell the server to execute the handlers for the ado handler module and of course request the fav icon again.  
+		This time there is no handler for "/ado/not here" so the router module will raise a 404 error.
+		</p>
+		<code><pre>
+		Routing /ado/not%20here
+		module : ado
+		Raise a 404 error
+		Routing /Resources/favicon.ico
+		module : Resources
+		Executing getFile('/Resources/favicon.ico')
+		</pre></code>
+		<p>Notice that the following lines in the console log show the server having to load the module required and that it only loads the module once even though we are making multiple requests.</p>
+		<code><pre>
+		Looking for ./handlers/ado.js
+		Loading handler [ado]
+		</pre></code>
 	</body>
 </html>

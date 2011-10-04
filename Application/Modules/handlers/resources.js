@@ -1,9 +1,10 @@
 ///<summary>
 /// A function to return a file in the Resources directory requests
 ///</summary>
+///<param name='pathname'>The request path to process</param>
 ///<param name='response'>The connection to send the response on</param>
 function getFile(pathname, response){ 
-	console.log("getFile");
+	console.log("Executing getFile('"+pathname+"')");
 	response.writeHead(200, {"Content-Type": "text\plain"});
 	response.write("Hello and welcome " + pathname);
 	response.end();	

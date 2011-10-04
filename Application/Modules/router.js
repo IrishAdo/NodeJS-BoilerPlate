@@ -6,7 +6,7 @@
 ///<param name="response">the response object ot return the page request on</param>
 ///<param name="RaiseError">the Raise error function</param>
 function route(handlers, PathName,response, RaiseError){
-	console.log("request to process " + PathName);
+	console.log("Routing " + PathName);
 	// we are going to use the first part of the path as the module name of the handler
 	// to get here the handler will exist and have been loaded
 	var module = PathName.split("/")[1];

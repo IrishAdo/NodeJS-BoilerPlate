@@ -28,7 +28,8 @@ function start(OverRideConfiguration){
 	
 	//  allow the start.js file to overwrite the port to listen on.
 	if (OverRideConfiguration.port){ 
-		configuration.port = OverRideConfiguration.port
+		console.log("Overriding the configuration Port changed from " + configuration.port + " to " + OverRideConfiguration.port);
+		configuration.port = OverRideConfiguration.port;
 	}
 	
 	///<summary>
@@ -45,9 +46,8 @@ function start(OverRideConfiguration){
 		
 		// get the module name
 		var module = pathname.split("/")[1];
-	
 		// check if a handler has already been loaded for this request.
-		if(typeof handles[module] !== 'Array'){
+		if(typeof handles[module] !== 'object'){
 			// if we have not already loaded the handler object go find it.
 			FindHandler(router,handles,pathname,response);
 		} else {
@@ -68,21 +68,21 @@ function start(OverRideConfiguration){
 		var foundHandler = false;
 		var responseObject = response;
 		var module = pathInfo.split("/")[1];
-		console.log("looking for ./handlers/"+module+".js");
+		console.log("Looking for ./handlers/"+module+".js");
 		
+		// IMPORTANT - path.exists is from the directory location you start you application
+		//             while the require function is from the location of this file. 
 		path.exists("./Application/Modules/handlers/"+module+".js", function(exists) {
 			if(!exists) {
-				console.log("notfound "+module)
 				RaiseError(404,response);
 				return;
 			}
-			console.log("requiring "+module)
+			console.log("Loading handler [" + module + "]");
 			var loadedModule = require("./handlers/"+module);
 			loadedModule.addHandlersToList(handles);
 			foundHandler = true;
 			router.route(handles, pathInfo, responseObject, RaiseError);
 		}); 
-	
 	}
 	
 	///<summary>
@@ -91,6 +91,7 @@ function start(OverRideConfiguration){
 	///<param name='code'>404, 401, 500, 501, ...</param>
 	///<param name='response'>The connection to send the response on</param>
 	function RaiseError(code,response){
+		console.log("Raise a " + code + " error");
 		var buffer ="";
 		if (code==404){
 			buffer = "404 - Page not found.";
