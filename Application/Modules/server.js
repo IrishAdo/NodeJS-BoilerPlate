@@ -1,5 +1,6 @@
 /**
  * This Script represents the Server Module
+ * <licence>FreeTard Open Source</licence>
  */
 
 // A global handler variable

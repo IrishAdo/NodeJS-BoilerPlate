@@ -2,7 +2,9 @@
  * This Script starts the application server
  * ------------------------------------------
  * @author irishado@hotmail.com
- * @copyright Creative Commons
+///<file>
+///<licence>FreeTard Open Source</licence>
+///</file>
  */
 
 // create a object from our server.js file

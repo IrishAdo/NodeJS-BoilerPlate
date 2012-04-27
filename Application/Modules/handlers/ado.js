@@ -1,3 +1,7 @@
+///<file>
+///<licence>FreeTard Open Source</licence>
+///</file>
+
 ///<summary>
 /// A function to process /ado/hello requests
 ///</summary>

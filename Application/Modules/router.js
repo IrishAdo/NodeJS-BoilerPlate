@@ -1,3 +1,6 @@
+///<file>
+///<licence>FreeTard Open Source</licence>
+///</file>
 ///<summary>
 ///route all requests via one of the handlers
 ///</summary>

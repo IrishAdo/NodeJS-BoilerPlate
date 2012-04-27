@@ -1,3 +1,6 @@
+///<file>
+///<licence>FreeTard Open Source</licence>
+///</file>
 var fs = require("fs");
 ///<summary>
 /// A function to return a file in the Resources directory requests
