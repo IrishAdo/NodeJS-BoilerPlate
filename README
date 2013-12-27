@@ -1,0 +1,12 @@
+====================================
+Welcome To the NodeJS Boiler plate
+====================================
+
+
+To start the application you will need to run start.bat from the command line.
+
+On Linux/Mac OSX you might have to chmod the file to have execute permissions.
+
+
+This will start a web server runnning on localhost port 801
+
