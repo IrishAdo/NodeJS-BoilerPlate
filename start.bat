@@ -1,1 +1,1 @@
-\bin\node Application\start.js
+node Application/start.js
